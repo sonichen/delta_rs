@@ -4,19 +4,22 @@ mod constants {
     pub const BLOCK_SIZE: usize = 10;
 }
 
-// 数据块的结构
+/// Structure for a data block
 #[derive(Debug, Clone, PartialEq)]
 struct DataBlock {
-    block_number: usize, // 数据块的编号
-    data: Vec<u8>,       // 数据块的内容
+    /// Block number of the data block
+    block_number: usize,
+    /// Content of the data block
+    data: Vec<u8>,
 }
+
 impl DataBlock {
     fn new(block_number: usize, data: Vec<u8>) -> Self {
         DataBlock { block_number, data }
     }
 }
 
-// 将大规模数据切分成固定大小的数据块，并记录数据块的编号
+///  Splitting large-scale data into fixed-size data blocks and recording the block numbers.
 fn split_data_into_blocks(data: Vec<u8>, block_size: usize) -> (Vec<DataBlock>, Vec<usize>) {
     let mut blocks = Vec::new();
     let mut index = 0;
@@ -34,7 +37,7 @@ fn split_data_into_blocks(data: Vec<u8>, block_size: usize) -> (Vec<DataBlock>, 
     (blocks, numbers)
 }
 
-// 对比数据块列表，找到新增的数据块
+// Comparing data block lists to find newly added data blocks.
 fn find_different_blocks(
     id: u8,
     deltas: &Vec<Delta>,
@@ -58,6 +61,7 @@ fn find_different_blocks(
     elements_not_in_block1
 }
 
+/// add new blocks to blocklist
 fn add_to_block_list(
     mut block_list: Vec<DataBlock>,
     different_blocks: Vec<DataBlock>,
@@ -75,7 +79,7 @@ fn add_to_block_list(
     (block_list, diff_number)
 }
 
-// 将 Vec<DataBlock> 转换为 Vec<u8> 的函数
+/// Convert Vec<DataBlock> to Vec<u8>.
 fn extract_data_from_data_blocks(data_blocks: &[DataBlock]) -> Vec<u8> {
     let mut extracted_data: Vec<u8> = Vec::new();
     for data_block in data_blocks {
@@ -83,6 +87,7 @@ fn extract_data_from_data_blocks(data_blocks: &[DataBlock]) -> Vec<u8> {
     }
     extracted_data
 }
+
 fn extract_index(vec_data1: &Vec<DataBlock>, vec_data2: &Vec<DataBlock>) -> Vec<usize> {
     let mut index: Vec<usize> = Vec::new();
     for data_block1 in vec_data1.iter() {
@@ -96,29 +101,27 @@ fn extract_index(vec_data1: &Vec<DataBlock>, vec_data2: &Vec<DataBlock>) -> Vec<
 
     index
 }
-
+/// Find blocks by id
 fn find_blocks_by_id(id: u8, record_table: &Vec<Delta>) -> Option<Vec<DataBlock>> {
-    // 在 record_table 中查找与给定 id 匹配的 Delta
+    // Find the Delta that matches the given ID in the record_table
     let delta_to_find = record_table.iter().find(|delta| delta.id == id);
-    // println!("{:?}=====",delta_to_find);
-    // 如果找到了匹配的 Delta，则获取该 Delta 中的 index
+
+    // If a matching Delta is found, get the indexes from that Delta
     if let Some(delta) = delta_to_find {
         let data_indices = &delta.index;
         let blocks = get_data_blocks_up_to_id(id, record_table);
-        // 使用 data_indices 在 Delta 的 blocks 中找到对应的数据块
         let mut data_blocks = Vec::new();
         for &data_index in data_indices {
             if let Some(data_block) = blocks.get(data_index) {
                 data_blocks.push(data_block.clone());
             }
         }
-        // 返回找到的数据块
         Some(data_blocks)
     } else {
-        // 如果找不到匹配的 Delta，则返回 None
         None
     }
 }
+
 #[derive(Debug, Clone)]
 struct Delta {
     id: u8,
@@ -136,9 +139,7 @@ impl Delta {
         }
     }
     fn init(content: &str) -> Vec<Delta> {
-        // 转换数据
         let data: Vec<u8> = content.as_bytes().to_vec();
-        // 构建块列表，记录原始数据的构建编号
         let (blocks, data_indices) = split_data_into_blocks(data.clone(), constants::BLOCK_SIZE);
         let delta = Delta::new(0, data_indices, blocks, true);
         let mut deltas: Vec<Delta> = Vec::new();
@@ -146,63 +147,59 @@ impl Delta {
         deltas
     }
 
-    fn add(content: &str, mut record_table: Vec<Delta>) -> Vec<Delta> {
-        // 转换数据
-        let current_data: Vec<u8> = content.as_bytes().to_vec();
-        let (current_data_blocks, _data_indices) =
-            split_data_into_blocks(current_data.clone(), constants::BLOCK_SIZE);
-
-        //查看上一个数据
-        let last;
-        if let Some(last_element) = record_table.last() {
-            // 将最后一个元素的值存储在变量 last_value 中
-            last = last_element;
-        } else {
-            // 向量为空时的处理
-            println!("The vector is empty!");
+    fn add(content: &str, mut record_table: Vec<Delta>, snapshot: bool) -> Vec<Delta> {
+        // Check the last data
+        let last = record_table.last().unwrap_or_else(|| {
+            println!("The last data is empty!");
             process::exit(1);
-        }
+        });
         let last_id = last.id;
 
-        // 处理现在数据
+
+        // Process the current data
         let current_id = last_id + 1;
 
-        // 构建块列表，记录原始数据的构建编号
-      
+        // Convert the content to data
+        let current_data: Vec<u8> = content.as_bytes().to_vec();
+        let (current_data_blocks, _data_indices) = split_data_into_blocks(current_data.clone(), constants::BLOCK_SIZE);
+       
+        // Build a block list and record the construction number of the original data
         let different_blocks =
             find_different_blocks(last_id, &record_table, &current_data, constants::BLOCK_SIZE);
-     
-        let block_list=get_data_blocks_up_to_id(last_id, &record_table);
-        let (records, diff) = add_to_block_list(block_list, different_blocks);
-       
-        let mut diff_blocks: Vec<DataBlock> = Vec::new();
-        for item in &diff {
-            for record in &records {
-                if &record.block_number == item {
-                    let db = DataBlock {
-                        block_number: *item,
-                        data: record.data.clone(),
-                    };
-                    diff_blocks.push(db);
-                }
-            }
-        }
 
+        let block_list = get_data_blocks_up_to_id(last_id, &record_table);
+        let (records, diff) = add_to_block_list(block_list, different_blocks);
+        
+        // assign id to diff blocks
+        let diff_blocks: Vec<DataBlock> = records
+        .iter()
+        .filter_map(|record| {
+            if diff.contains(&record.block_number) {
+                Some(DataBlock {
+                    block_number: record.block_number,
+                    data: record.data.clone(),
+                })
+            } else {
+                None
+            }
+        })
+        .collect();
+    
+        // get current index
         let matching_block_numbers = extract_index(&current_data_blocks, &records);
 
-        let detla = Delta {
+        let delta = Delta {
             id: current_id,
-            index: (matching_block_numbers),
-            blocks: (diff_blocks),
-            snapshot: false,
+            index: matching_block_numbers,
+            blocks: diff_blocks,
+            snapshot: snapshot,
         };
-        record_table.push(detla);
+        record_table.push(delta);
         record_table
     }
 }
-// 将 Vec<DataBlock> 组合为文本的函数
 
-// 组合 Vec<DataBlock> 为文本
+/// Function to combine Vec<DataBlock> into text
 fn combine_data_blocks_to_text(data_blocks: &Vec<DataBlock>) -> String {
     let mut combined_text = String::new();
     for data_block in data_blocks {
@@ -210,21 +207,18 @@ fn combine_data_blocks_to_text(data_blocks: &Vec<DataBlock>) -> String {
     }
     combined_text
 }
-// 通过ID找到对应的index
+/// Find the corresponding indexes by ID.
 fn find_index_by_id(id: u8, delta_list: &Vec<Delta>) -> Option<Vec<usize>> {
-    // 在 delta_list 中查找与给定 id 匹配的 Delta
     let delta_to_find = delta_list.iter().find(|delta| delta.id == id);
 
-    // 如果找到了匹配的 Delta，则返回该 Delta 中的 index
     if let Some(delta) = delta_to_find {
         Some(delta.index.clone())
     } else {
-        // 如果找不到匹配的 Delta，则返回 None
         None
     }
 }
 
-// 获取从id=0开始到输入id的所有数据块
+/// Get all data blocks from ID 0 to the input ID.
 fn get_data_blocks_up_to_id(id: u8, delta_list: &Vec<Delta>) -> Vec<DataBlock> {
     let mut data_blocks = Vec::new();
     for delta in delta_list {
@@ -235,7 +229,7 @@ fn get_data_blocks_up_to_id(id: u8, delta_list: &Vec<Delta>) -> Vec<DataBlock> {
     data_blocks
 }
 
-// 获取index对应的Vec<DataBlock>
+/// Get the Vec<DataBlock> corresponding to the indexes.
 fn get_data_blocks_by_index(index: &Vec<usize>, data_blocks: &[DataBlock]) -> Vec<DataBlock> {
     let mut result_blocks = Vec::new();
     for &idx in index {
@@ -245,30 +239,30 @@ fn get_data_blocks_by_index(index: &Vec<usize>, data_blocks: &[DataBlock]) -> Ve
     }
     result_blocks
 }
-
+/// Get full data(string)
 fn get_full_data(id: u8, detlas: Vec<Delta>) -> String {
     if let Some(index) = find_index_by_id(id, &detlas) {
         let data_blocks = get_data_blocks_up_to_id(id, &detlas);
         let selected_blocks = get_data_blocks_by_index(&index, &data_blocks);
-         combine_data_blocks_to_text(&selected_blocks)
+        combine_data_blocks_to_text(&selected_blocks)
     } else {
         println!("No data blocks found for ID {}", id);
-        "Wrong".to_owned()
+        process::exit(1);
     }
 }
 
 fn main() {
     let mut detlas = Delta::init("ABCDEFGHIJKLMNOPQRSTUVWXYJ");
-    detlas = Delta::add("1BCDEFGHIJKLMNOPQRSTUVWXY1", detlas);
-    detlas = Delta::add("ABCDEFGHIJKLMNOPQRSTUVWXY8", detlas);
-    detlas = Delta::add("ABCDEFG5IJKLMN7PQRSTUVWXYJ", detlas);
-    detlas = Delta::add("ABCDEFGHIJKLMNOPQRSTUVWXYJ", detlas);
+    detlas = Delta::add("1BCDEFGHIJKLMNOPQRSTUVWXY1", detlas, false);
+    detlas = Delta::add("ABCDEFGHIJKLMNOPQRSTUVWXY8", detlas, false);
+    detlas = Delta::add("ABCDEFG5IJKLMN7PQRSTUVWXYJ", detlas, false);
+    detlas = Delta::add("ABCDEFGHIJKLMNOPQRSTUVWXYJ", detlas, true);
 
     // println!("{:?}",get_full_data(3, detlas));
     // println!("{:?}",get_full_data(1, detlas.clone()));
     // println!("{:?}",get_full_data(2, detlas.clone()));
 
     for item in &detlas {
-         println!("{:?}\n", item);
+        println!("{:?}\n", item);
     }
 }

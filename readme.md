@@ -1,6 +1,14 @@
-# [delta_rs 0.1.0](https://crates.io/crates/delta_rs)
+# delta_rs 0.1.0
 
 `delta_rs` is a **version control** and **incremental data storage tool** based on Rust, allowing you to store only data blocks that have not been stored in previous versions, effectively managing and restoring different versions of data. 
+
+delta_rs 0.1.0 has been released. https://crates.io/crates/delta_rs
+
+**Note: delta_rs 0.2.0 is under development. **
+
+- [ ] add snapshot to improve efficiency
+- [ ] Optimize the data block separation rule so that it cuts according to data length
+- [ ] Optimize Data Block Identification
 
 ## Design Overview
 
@@ -81,11 +89,3 @@ Delta { id: 3, index: [0, 7, 8], blocks: [DataBlock { block_number: 7, data: [10
 `delta_rs` is licensed under this licensed:
 
 - MIT LICENSE ( https://opensource.org/licenses/MIT)
-
-## Future Work
-
-**delta_rs is under development.**
-
-- [ ] add snapshot to improve efficiency
-- [ ] Optimize the data block separation rule so that it cuts according to data length
-- [ ] Optimize Data Block Identification

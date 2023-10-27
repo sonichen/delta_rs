@@ -7,7 +7,7 @@ documentation = "https://github.com/sonichen/delta_rs"
 homepage = "https://github.com/sonichen/delta_rs"
 keywords = ["delta", "incremental storage", "data blocks"]
 license = "MIT OR Apache-2.0"
-readme = "https://github.com/sonichen/delta_rs"
+readme = "readme.md"
 repository = "https://github.com/sonichen/delta_rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

@@ -1,4 +1,4 @@
-# [delta_rs 0.1.0](https://github.com/sonichen/delta_rs)
+# [delta_rs 0.1.0](https://crates.io/crates/delta_rs)
 
 `delta_rs` is a **version control** and **incremental data storage tool** based on Rust, allowing you to store only data blocks that have not been stored in previous versions, effectively managing and restoring different versions of data. 
 

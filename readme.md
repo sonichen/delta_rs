@@ -76,11 +76,6 @@ Hello, I am a Go developer.
 Delta { id: 3, index: [0, 7, 8], blocks: [DataBlock { block_number: 7, data: [109, 32, 97, 32, 71, 111, 32, 100, 101, 118] }, DataBlock { block_number: 8, data: [101, 108, 111, 112, 101, 114, 46] }], snapshot: true }
 ```
 
-## Author
-
-- sonichen
-- yjchen047@gmail.com
-
 ## Support
 
 If you have questions or need assistance, please contact [yjchen047@gmail.com] or submit an issue on GitHub.

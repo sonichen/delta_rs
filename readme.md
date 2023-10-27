@@ -36,7 +36,7 @@ delta_rs = "0.1.0"
 ### Usage Example
 
 ```rust
-use delta_rs::delta_rs::{ get_content, Deltas};
+use delta_rs::{ get_content, Deltas};
 
 fn main() {
     // Write data
@@ -76,20 +76,8 @@ Hello, I am a Go developer.
 Delta { id: 3, index: [0, 7, 8], blocks: [DataBlock { block_number: 7, data: [109, 32, 97, 32, 71, 111, 32, 100, 101, 118] }, DataBlock { block_number: 8, data: [101, 108, 111, 112, 101, 114, 46] }], snapshot: true }
 ```
 
-## Support
-
-If you have questions or need assistance, please contact [yjchen047@gmail.com] or submit an issue on GitHub.
-
 ## License
 
 `delta_rs` is licensed under this licensed:
 
 - MIT LICENSE ( https://opensource.org/licenses/MIT)
-
-## Future Work
-
-**delta_rs is under development.**
-
-- [ ] add snapshot to improve efficiency
-- [ ] Optimize the data block separation rule so that it cuts according to data length
-- [ ] Optimize Data Block Identification

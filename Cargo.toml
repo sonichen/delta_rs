@@ -1,11 +1,11 @@
 [package]
 name = "delta_rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A version control and incremental data storage tool based on Rust,"
 documentation = "https://github.com/sonichen/delta_rs"
 homepage = "https://github.com/sonichen/delta_rs"
-keywords = ["delta", "VersionControl", "IncrementalStorage","blocks"]
+keywords = ["delta_rs", "VersionControl", "IncrementalStorage","blocks"]
 license = "MIT OR Apache-2.0"
 readme = "readme.md"
 repository = "https://github.com/sonichen/delta_rs"

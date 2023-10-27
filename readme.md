@@ -30,7 +30,7 @@ Add delta_rs as a dependency in your Cargo.toml:
 
 ```toml
 [dependencies]
-delta_rs = "0.1.0"
+delta_rs = "0.1.1"
 ```
 
 ### Usage Example

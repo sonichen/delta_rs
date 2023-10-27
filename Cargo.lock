@@ -380,7 +380,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "delta_store"
+name = "delta_rs"
 version = "0.1.0"
 dependencies = [
  "anyhow",

@@ -14,6 +14,7 @@ pub struct DataBlock {
 }
 
 impl DataBlock {
+    /// Create a data block
     fn new(block_number: usize, data: Vec<u8>) -> Self {
         DataBlock { block_number, data }
     }
@@ -61,7 +62,7 @@ fn find_different_blocks(
     elements_not_in_block1
 }
 
-/// add new blocks to blocklist
+/// Add new blocks to blocklist
 fn add_to_block_list(
     mut block_list: Vec<DataBlock>,
     different_blocks: Vec<DataBlock>,
@@ -79,15 +80,7 @@ fn add_to_block_list(
     (block_list, diff_number)
 }
 
-/// Convert Vec<DataBlock> to Vec<u8>.
-fn _extract_data_from_data_blocks(data_blocks: &[DataBlock]) -> Vec<u8> {
-    let mut extracted_data: Vec<u8> = Vec::new();
-    for data_block in data_blocks {
-        extracted_data.extend(data_block.data.iter().cloned());
-    }
-    extracted_data
-}
-
+/// Extract the index of data block
 fn extract_index(vec_data1: &Vec<DataBlock>, vec_data2: &[DataBlock]) -> Vec<usize> {
     let mut index: Vec<usize> = Vec::new();
     for data_block1 in vec_data1.iter() {
@@ -101,27 +94,26 @@ fn extract_index(vec_data1: &Vec<DataBlock>, vec_data2: &[DataBlock]) -> Vec<usi
 
     index
 }
-/// Find blocks by id
-fn _find_blocks_by_id(id: u8, record_table: &Vec<Delta>) -> Option<Vec<DataBlock>> {
-    // Find the Delta that matches the given ID in the record_table
-    let delta_to_find = record_table.iter().find(|delta| delta.id == id);
-
-    // If a matching Delta is found, get the indexes from that Delta
-    if let Some(delta) = delta_to_find {
-        let data_indices = &delta.index;
-        let blocks = get_data_blocks_up_to_id(id, record_table);
-        let mut data_blocks = Vec::new();
-        for &data_index in data_indices {
-            if let Some(data_block) = blocks.get(data_index) {
-                data_blocks.push(data_block.clone());
-            }
-        }
-        Some(data_blocks)
-    } else {
-        None
-    }
+/// Deltas, store the deltas for data
+#[derive(Debug, Clone)]
+pub struct Deltas{
+    pub deltas: Vec<Delta>,
 }
+impl Deltas {
+     // First Store     
+     pub fn create( context: &str) ->Deltas {
+        Delta::init(context)
+     }
 
+     //  Delta Store  
+     pub fn add(&mut self, content: &str){
+        let deltas=Delta::add(content, self.deltas.clone(), true);
+        self.deltas=deltas;
+       
+     }
+    
+}
+/// Delta, record block info
 #[derive(Debug, Clone)]
 pub struct Delta {
     pub id: u8,
@@ -130,6 +122,7 @@ pub struct Delta {
     pub snapshot: bool,
 }
 impl Delta {
+    /// Create delta
     fn new(id: u8, index: Vec<usize>, blocks: Vec<DataBlock>, snapshot: bool) -> Self {
         Delta {
             id,
@@ -138,16 +131,23 @@ impl Delta {
             snapshot,
         }
     }
-    pub fn init(content: &str) -> Vec<Delta> {
+    /// Create the first store
+    pub fn init(content: &str) ->Deltas {
         let data: Vec<u8> = content.as_bytes().to_vec();
         let (blocks, data_indices) = split_data_into_blocks(data.clone(), constants::BLOCK_SIZE);
         let delta = Delta::new(0, data_indices, blocks, true);
         let mut deltas: Vec<Delta> =Vec::new();
         deltas.push(delta);
-        deltas
+        // deltas
+        Deltas{
+            deltas
+        }
+        
     }
-
-    pub  fn add(content: &str, mut record_table: Vec<Delta>, snapshot: bool) -> Vec<Delta> {
+   
+    /// Store data
+    pub fn add(content: &str, mut record_table: Vec<Delta>, snapshot: bool) -> Vec<Delta> {
+        // let mut record_table=self;
         // Check the last data
         let last = record_table.last().unwrap_or_else(|| {
             println!("The last data is empty!");
@@ -207,6 +207,7 @@ fn combine_data_blocks_to_text(data_blocks: &Vec<DataBlock>) -> String {
     }
     combined_text
 }
+
 /// Find the corresponding indexes by ID.
 fn find_index_by_id(id: u8, delta_list: &[Delta]) -> Option<Vec<usize>> {
     let delta_to_find = delta_list.iter().find(|delta| delta.id == id);

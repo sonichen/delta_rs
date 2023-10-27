@@ -106,7 +106,7 @@ impl Deltas {
      }
 
      //  Delta Store  
-     pub fn add(&mut self, content: &str){
+     pub fn modify(&mut self, content: &str){
         let deltas=Delta::add(content, self.deltas.clone(), true);
         self.deltas=deltas;
        
@@ -237,7 +237,7 @@ fn get_data_blocks_by_index(index: &Vec<usize>, data_blocks: &[DataBlock]) -> Ve
     result_blocks
 }
 /// Get full data(string)
-pub fn get_full_data(id: u8, detlas: Vec<Delta>) -> String {
+pub fn get_content(id: u8, detlas: Vec<Delta>) -> String {
     if let Some(index) = find_index_by_id(id, &detlas) {
         let data_blocks = get_data_blocks_up_to_id(id, &detlas);
         let selected_blocks = get_data_blocks_by_index(&index, &data_blocks);

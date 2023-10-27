@@ -4,7 +4,7 @@
 
 delta_rs 0.1.0 has been released. https://crates.io/crates/delta_rs
 
-**Note: delta_rs 0.2.0 is under development. **
+**!!Note: delta_rs 0.2.0 is under development.**
 
 - [ ] add snapshot to improve efficiency
 - [ ] Optimize the data block separation rule so that it cuts according to data length

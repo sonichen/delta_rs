@@ -1,6 +1,16 @@
-# track_rs 0.1.0
+# track_rs
 
 `track_rs` is a **version control**  based on Rust, allowing you to store only data blocks that have not been stored in previous versions, effectively managing and restoring different versions of data. 
+
+## Versions
+
+track_rs 0.1.0 can do data version control and use incremental data storage. It has been released. https://crates.io/crates/track_rs
+
+**!!Note: track_rs 0.2.0 is under development.** 
+
+- [ ] add snapshot to improve efficiency 
+- [ ] Optimize the data block separation rule so that it cuts according to data length 
+- [ ] Optimize Data Block Identification
 
 ## Design Overview
 

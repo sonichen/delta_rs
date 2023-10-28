@@ -1,18 +1,10 @@
-# delta_rs 0.1.0
+# track_rs 0.1.0
 
-`delta_rs` is a **version control** and **incremental data storage tool** based on Rust, allowing you to store only data blocks that have not been stored in previous versions, effectively managing and restoring different versions of data. 
-
-delta_rs 0.1.0 has been released. https://crates.io/crates/delta_rs
-
-**!!Note: delta_rs 0.2.0 is under development.**
-
-- [ ] add snapshot to improve efficiency
-- [ ] Optimize the data block separation rule so that it cuts according to data length
-- [ ] Optimize Data Block Identification
+`track_rs` is a **version control**  based on Rust, allowing you to store only data blocks that have not been stored in previous versions, effectively managing and restoring different versions of data. 
 
 ## Design Overview
 
-The design of delta_rs is centered around the following key principles:
+The design of track_rs is centered around the following key principles:
 
 - **Version Control**: The project allows users to maintain and manage multiple versions of data. Each version is represented as a Delta.
 
@@ -24,7 +16,7 @@ The design of delta_rs is centered around the following key principles:
 
 ## Example Use Cases
 
-Delta_rs is designed to be useful in various scenarios, including:
+track_rs is designed to be useful in various scenarios, including:
 
 - Managing versioned documents or files efficiently.
 - Reducing storage space for data that evolves over time.
@@ -34,17 +26,17 @@ Delta_rs is designed to be useful in various scenarios, including:
 
 ### Installation
 
-Add delta_rs as a dependency in your Cargo.toml:
+Add track_rs as a dependency in your Cargo.toml:
 
 ```toml
 [dependencies]
-delta_rs = "0.1.1"
+track_rs = "0.1.0"
 ```
 
 ### Usage Example
 
 ```rust
-use delta_rs::{ get_content, Deltas};
+use track_rs::{ get_content, Deltas};
 
 fn main() {
     // Write data
@@ -71,21 +63,21 @@ fn main() {
 Output
 
 ```shell
-Hello, I am a rust developer.
+The text in 0 time is 'Hello, I am a rust developer.'
 Delta { id: 0, index: [0, 1, 2], blocks: [DataBlock { block_number: 0, data: [72, 101, 108, 108, 111, 44, 32, 73, 32, 97] }, DataBlock { block_number: 1, data: [109, 32, 97, 32, 114, 117, 115, 116, 32, 100] }, DataBlock { block_number: 2, data: [101, 118, 101, 108, 111, 112, 101, 114, 46] }], snapshot: true }
 
-Hello, I am a Java developer.
+The text in 1 time is 'Hello, I am a Java developer.'
 Delta { id: 1, index: [0, 3, 2], blocks: [DataBlock { block_number: 3, data: [109, 32, 97, 32, 74, 97, 118, 97, 32, 100] }], snapshot: true }
 
-Hello, I am a Python developer.
+The text in 2 time is 'Hello, I am a Python developer.'
 Delta { id: 2, index: [0, 4, 5, 6], blocks: [DataBlock { block_number: 4, data: [109, 32, 97, 32, 80, 121, 116, 104, 111, 110] }, DataBlock { block_number: 5, data: [32, 100, 101, 118, 101, 108, 111, 112, 101, 114] }, DataBlock { block_number: 6, data: [46] }], snapshot: true }
 
-Hello, I am a Go developer.
+The text in 3 time is 'Hello, I am a Go developer.'
 Delta { id: 3, index: [0, 7, 8], blocks: [DataBlock { block_number: 7, data: [109, 32, 97, 32, 71, 111, 32, 100, 101, 118] }, DataBlock { block_number: 8, data: [101, 108, 111, 112, 101, 114, 46] }], snapshot: true }
 ```
 
 ## License
 
-`delta_rs` is licensed under this licensed:
+`track_rs` is licensed under this licensed:
 
 - MIT LICENSE ( https://opensource.org/licenses/MIT)

@@ -41,11 +41,11 @@ fn split_data_into_blocks(data: Vec<u8>, block_size: usize) -> (Vec<DataBlock>, 
 // Comparing data block lists to find newly added data blocks.
 fn find_different_blocks(
     id: u8,
-    deltas: &Vec<Delta>,
+    track: &Vec<Delta>,
     current_data: &[u8],
     _block_size: usize,
 ) -> Vec<DataBlock> {
-    let blocks1 = get_data_blocks_up_to_id(id, deltas);
+    let blocks1 = get_data_blocks_up_to_id(id, track);
     let (blocks2, _data_indices) =
         split_data_into_blocks(current_data.clone().to_vec(), constants::BLOCK_SIZE);
     // Find elements in block1 that are not in block2
@@ -94,21 +94,21 @@ fn extract_index(vec_data1: &Vec<DataBlock>, vec_data2: &[DataBlock]) -> Vec<usi
 
     index
 }
-/// Deltas, store the deltas for data
+/// Track, store the track for data
 #[derive(Debug, Clone)]
-pub struct Deltas{
-    pub deltas: Vec<Delta>,
+pub struct Track{
+    pub track: Vec<Delta>,
 }
-impl Deltas {
+impl Track {
      // First Store     
-     pub fn create( context: &str) ->Deltas {
+     pub fn create( context: &str) ->Track {
         Delta::init(context)
      }
 
      //  Delta Store  
      pub fn modify(&mut self, content: &str){
-        let deltas=Delta::add(content, self.deltas.clone(), true);
-        self.deltas=deltas;
+        let track=Delta::add(content, self.track.clone(), true);
+        self.track=track;
        
      }
     
@@ -132,15 +132,15 @@ impl Delta {
         }
     }
     /// Create the first store
-    pub fn init(content: &str) ->Deltas {
+    pub fn init(content: &str) ->Track {
         let data: Vec<u8> = content.as_bytes().to_vec();
         let (blocks, data_indices) = split_data_into_blocks(data.clone(), constants::BLOCK_SIZE);
         let delta = Delta::new(0, data_indices, blocks, true);
-        let mut deltas: Vec<Delta> =Vec::new();
-        deltas.push(delta);
-        // deltas
-        Deltas{
-            deltas
+        let mut track: Vec<Delta> =Vec::new();
+        track.push(delta);
+        // track
+        Track{
+            track
         }
         
     }

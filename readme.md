@@ -8,7 +8,7 @@ The design of track_rs is centered around the following key principles:
 
 - **Version Control**: The project allows users to maintain and manage multiple versions of data. Each version is represented as a Delta.
 
-- **Incremental Data Storage**: To reduce storage space usage, delta_rs stores only the data blocks that have not been stored in previous versions. This is achieved through a block-based approach.
+- **Incremental Data Storage**: To reduce storage space usage, track_rs stores only the data blocks that have not been stored in previous versions. This is achieved through a block-based approach.
 
 - **Block-Based Storage**: Data is divided into blocks, and each block is associated with a unique identifier. When a new version is created, only the new and previously unsaved blocks are stored, along with the composition order. This design minimizes redundant data storage.
 
@@ -36,24 +36,26 @@ track_rs = "0.1.0"
 ### Usage Example
 
 ```rust
-use track_rs::{ get_content, Deltas};
+ 
+
+use track_rs::track_rs::{ get_content, Track};
 
 fn main() {
     // Write data
-    let mut deltas=Deltas::create("Hello, I am a rust developer.");
+    let mut track=Track::create("Hello, I am a rust developer.");
     
     // First modify
-    deltas.modify("Hello, I am a Java developer.");
+    track.modify("Hello, I am a Java developer.");
 
     // Second modify
-    deltas.modify("Hello, I am a Python developer.");
+    track.modify("Hello, I am a Python developer.");
 
     // Third modify
-    deltas.modify("Hello, I am a Go developer.");
+    track.modify("Hello, I am a Go developer.");
 
     // print the data block and the content
-    for item in &deltas.deltas {
-        println!("{}", get_content(item.id, deltas.deltas.clone()));
+    for item in &track.track {
+        println!("The text in {} time is '{}'",item.id, get_content(item.id, track.track.clone()));
         println!("{:?}\n", item);
     }
     

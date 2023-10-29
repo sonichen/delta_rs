@@ -15,6 +15,9 @@ fn main() {
     // Third modify
     track.modify("Hello, I am a Go developer.");
 
+    track.modify("Hello, I am a Solidity developer.");
+
+
     // print the data block and the content
     for item in &track.track {
         println!("The text in {} time is '{}'",item.id, get_content(item.id, track.track.clone()));

@@ -6,12 +6,16 @@
 
 track_rs 0.1.0 can do data version control and use incremental data storage. It has been released. https://crates.io/crates/track_rs
 
-**!!Note: track_rs 0.2.0 is under development.** 
+**!!Note: track_rs 0.1.1 is under development.** 
 
-- [ ] add snapshot to improve efficiency 
+- [x] add snapshot to improve efficiency 
+- [x] If there are no changes compared with the last time, it will not be recorded this time.
+- [ ] Testing and documents
+
+**track_rs_0.2.0**
+
 - [ ] Optimize the data block separation rule so that it cuts according to data length 
 - [ ] Optimize Data Block Identification
-- [ ] Testing and documents
 
 ## Design Overview
 

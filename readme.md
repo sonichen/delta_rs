@@ -11,6 +11,7 @@ track_rs 0.1.0 can do data version control and use incremental data storage. It 
 - [ ] add snapshot to improve efficiency 
 - [ ] Optimize the data block separation rule so that it cuts according to data length 
 - [ ] Optimize Data Block Identification
+- [ ] Testing and documents
 
 ## Design Overview
 
